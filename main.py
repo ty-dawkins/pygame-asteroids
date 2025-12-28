@@ -3,35 +3,38 @@
 # throughout this file
 import pygame
 from constants import *
+from logger import log_state
+from player import Player
 
 def main():
     # initialize pygame and create a window
     pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
+    dt = 0
+
     
     # setup the display
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Asteroids")
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     print("Starting Asteroids!")
 
     # main game loop
-    running = True
-    while running:
+    while True:
+        # limit the framerate to 60 FPS
+        dt = clock.tick(60) / 1000
+
+        log_state()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-        # fill the screen with black
-        screen.fill((0, 0, 0))
+                return
 
-        # update the display
-        pygame.display.flip()
-
-    pygame.quit()
-
+        player.update(dt)
+        screen.fill("black")
+        player.draw(screen)
+        pygame.display.flip()    
     
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
-    
-
 if __name__ == "__main__":
     main()
