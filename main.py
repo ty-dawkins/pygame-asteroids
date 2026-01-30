@@ -27,7 +27,7 @@ def main():
     Player.containers = (updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
+    shot_count = 0
     dt = 0
 
     while True:
@@ -43,6 +43,7 @@ def main():
             if asteroid.collides_with(player):
                 log_event("player_hit")
                 print("Game over!")
+                print(f"Total asteroids hit: {shot_count}")
                 sys.exit()
 
             for shot in shots:
@@ -50,8 +51,15 @@ def main():
                     log_event("asteroid_shot")
                     shot.kill()
                     asteroid.split()
+                    shot_count += 1
 
-        screen.fill("black")
+        #fill blue
+        screen.fill("navy blue")
+
+        # Draw the shot count
+        font = pygame.font.Font(None, 36)
+        text = font.render(f"Asteroids Hit: {shot_count}", True, "white")
+        screen.blit(text, (SCREEN_WIDTH - 200, 20))
 
         for obj in drawable:
             obj.draw(screen)
@@ -60,7 +68,10 @@ def main():
 
         # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
-
-
+    
+        
 if __name__ == "__main__":
     main()
+
+
+    
