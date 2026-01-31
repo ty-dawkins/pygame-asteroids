@@ -7,6 +7,8 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from logger import log_event, log_state
 from player import Player
 from shot import Shot
+from playerlives import LivesManager
+
 
 
 def main():
@@ -27,8 +29,10 @@ def main():
     Player.containers = (updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    lives = LivesManager(lives=3, respawn_pos=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
     shot_count = 0
     dt = 0
+    
 
     while True:
         log_state()
@@ -38,13 +42,33 @@ def main():
                 return
 
         updatable.update(dt)
+        lives.update(dt)
 
+
+
+    # check for collisions but give the player 3 lives
         for asteroid in asteroids:
             if asteroid.collides_with(player):
+                # ignore collisions while the player is invulnerable
+                if lives.is_invulnerable():
+                    continue
+
                 log_event("player_hit")
-                print("Game over!")
-                print(f"Total asteroids hit: {shot_count}")
-                sys.exit()
+                # register the hit; hit() returns True if player still has lives
+                still_alive = lives.hit()
+                if not still_alive:
+                    print("Game over!")
+                    print(f"Total asteroids hit: {shot_count}")
+                    sys.exit()
+
+                # player is still alive: respawn and remove the asteroid that hit them
+                lives.respawn(player)
+                asteroid.kill()
+                # skip checking this asteroid against shots since it's removed
+                continue
+
+
+
 
             for shot in shots:
                 if asteroid.collides_with(shot):
@@ -54,12 +78,15 @@ def main():
                     shot_count += 1
 
         #fill blue
-        screen.fill("navy blue")
+        screen.fill((255, 110, 199))
 
-        # Draw the shot count
+        # Draw the shot counter in the top right corner
         font = pygame.font.Font(None, 36)
-        text = font.render(f"Asteroids Hit: {shot_count}", True, "white")
+        text = font.render(f"Asteroids Hit: {shot_count}", True, "black")
         screen.blit(text, (SCREEN_WIDTH - 200, 20))
+
+        #draw the lives counter in the top left corner
+        lives.render(screen, font)      
 
         for obj in drawable:
             obj.draw(screen)
@@ -68,8 +95,9 @@ def main():
 
         # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
-    
-        
+
+
+
 if __name__ == "__main__":
     main()
 
