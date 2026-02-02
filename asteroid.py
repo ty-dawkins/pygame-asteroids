@@ -15,7 +15,7 @@ class Asteroid(CircleShape):
 	def draw(self, screen):
 		# draw a circle at the asteroid's position with its radius
 		center = (int(self.position.x), int(self.position.y))
-		pygame.draw.circle(screen, "white", center, int(self.radius), LINE_WIDTH)
+		pygame.draw.circle(screen, "black", center, int(self.radius), LINE_WIDTH)
 
 	def update(self, dt):
 		# move in a straight line at constant speed
