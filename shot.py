@@ -13,7 +13,7 @@ class Shot(CircleShape):
 	def draw(self, screen):
 		# draw a filled small circle to represent the bullet
 		center = (int(self.position.x), int(self.position.y))
-		pygame.draw.circle(screen, "white", center, int(self.radius))
+		pygame.draw.circle(screen, "red", center, int(self.radius))
 
 	def update(self, dt):
 		# move in a straight line at constant speed
