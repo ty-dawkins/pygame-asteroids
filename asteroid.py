@@ -44,6 +44,8 @@ class Asteroid(CircleShape):
 		# create two new asteroid fragments at the same position
 		a1 = Asteroid(self.position.x, self.position.y, new_radius)
 		a2 = Asteroid(self.position.x, self.position.y, new_radius)
+		a3 = Asteroid(self.position.x, self.position.y, new_radius)
+		#add third fragment with opposite velocity to the original
 
 		# assign velocities to fragments
 		a1.velocity = vel1
